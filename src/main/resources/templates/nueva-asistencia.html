@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard Asistencia Vial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXcYZ1L6d5auHqkVQZ6y5Nzt1wR5WOEmM"></script>
+    <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 480px;
+        }
+    </style>
+</head>
+    <body>
+        <form action="#" th:action="@{/admin/addAsistencia}" th:object="${asistencia}" method="post">
+            <nav class="nav" style="width: 85vw; margin-left: auto; margin-right: auto;" >
+                <a class="nav-link" href="/admin/asistencias">Regresar</a>
+            </nav>
+            <div class="card" style="width: 85vw; margin-left: auto; margin-right: auto;" >
+                <div class="card-body">
+                    <h2 class="card-title" >Nueva Asistencia</h2>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label" for="nombre">Nombre*</label>
+                                <input class="form-control" type="text" th:field="*{nombre}" id="nombre" placeholder="Nombre">
+                                <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="apellido">Apellido*</label>
+                                <input class="form-control" type="text" th:field="*{apellido}" id="apellido" placeholder="Apellido">
+                                <span th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></span>
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="telefono">Telefono*</label>
+                                <input class="form-control" type="text" th:field="*{telefono}" id="telefono" placeholder="Telefono">
+                                <span th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label" for="tipoSituacion">Tipo de Situacion*</label>
+                                <select class="form-select" id="tipoSituacion" th:field="*{tipoSituacion}">
+                                    <option value=""></option>
+                                    <option value="Accidente">Accidente</option>
+                                    <option value="Avería">Avería</option>
+                                    <option value="Falta de Combustible">Falta de Combustible</option>
+                                </select>
+                                <span th:if="${#fields.hasErrors('tipoSituacion')}" th:errors="*{tipoSituacion}"></span>
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="placa">Placa*</label>
+                                <input class="form-control" type="text" th:field="*{placa}" id="placa" placeholder="Placa">
+                                <span th:if="${#fields.hasErrors('placa')}" th:errors="*{placa}"></span>
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="idTechnician">Technician</label>
+                                <select class="form-select" id="idTechnician" th:field="*{idTechnician}">
+                                    <option value=""></option>
+                                    <option th:each="tecnico : ${tecnicos}"
+                                            th:value="${tecnico.id}"
+                                            th:text="${tecnico.nombre} + ' ' + ${tecnico.apellido}">Technician
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label" for="marca">Marca</label>
+                                <select class="form-select" id="marca" th:field="*{marca}">
+                                    <option value=""></option>
+                                    <option value="Toyota">Toyota</option>
+                                    <option value="Nissan">Mercedes</option>
+                                    <option value="Hyundai">Honda</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="tipoVehiculo">Tipo Vehiculo</label>
+                                <select class="form-select" id="tipoVehiculo" th:field="*{tipoVehiculo}">
+                                    <option value=""></option>
+                                    <option value="Jeepeta">Jeepeta</option>
+                                    <option value="Motor">Motor</option>
+                                    <option value="Camioneta">Camioneta</option>
+                                    <option value="Sedán">Sedán</option>
+                                    <option value="Pesado">Pesado</option>
+                                    <option value="Autobus">Autobus</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="color">Color</label>
+                                <select class="form-select" id="color" th:field="*{color}">
+                                    <option value=""></option>
+                                    <option value="Rojo">Rojo</option>
+                                    <option value="Azul">Azul</option>
+                                    <option value="Blanco">Blanco</option>
+                                    <option value="Negro">Negro</option>
+                                    <option value="Gris">Gris</option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" th:field="*{latitud}" id="latitud">
+                        <span th:if="${#fields.hasErrors('latitud')}" th:errors="*{latitud}"></span>
+
+                        <input type="hidden" th:field="*{longitud}" id="longitud">
+                        <span th:if="${#fields.hasErrors('longitud')}" th:errors="*{longitud}"></span>
+                        </br>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMap" aria-expanded="false" aria-controls="collapseMap">
+                                    Ubicar en el mapa
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <input class="form-control" type="text" id="txtDireccion" placeholder="Direccion">
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-secondary" type="button" onClick="buscarPorDireccion()" >
+                                    Buscar por direccion
+                                </button>
+                            </div>
+                        </div>
+                        </br>
+                        <div class="collapse" id="collapseMap">
+                            <div class="card card-body">
+                                <div id="map"></div>
+                            </div>
+                        </div>
+                        </br>
+                        <input class="btn btn-primary" type="submit" value="Guardar">
+                        <a href="/admin/asistencias" type="button" class="btn btn-danger">Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <script>
+            const confirmBtn = document.getElementById('confirmPosition');
+            const txtLatitud = document.getElementById('latitud');
+            const txtLongitud = document.getElementById('longitud');
+            const lp = new locationPicker('map', {
+                setCurrentPosition: true,
+            }, {
+                zoom: 15
+            });
+
+            google.maps.event.addListener(lp.map, 'idle', function (event) {
+                const location = lp.getMarkerPosition();
+                txtLatitud.value = location.lat;
+                txtLongitud.value = location.lng;
+            });
+
+            function buscarPorDireccion()
+            {
+                const textoDireccion = txtDireccion.value;
+                const urlGetDireccion = 'https://maps.googleapis.com/maps/api/geocode/json?address='+textoDireccion+'&key=AIzaSyAXcYZ1L6d5auHqkVQZ6y5Nzt1wR5WOEmM';
+
+                fetch(urlGetDireccion)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    const newLocation = response.results[0].geometry.location;
+                    lp.setLocation(newLocation);
+                })
+                .catch(function (error) {
+                    console.log("Error: " + error);
+                });
+            }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    </body>
+</html>

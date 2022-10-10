@@ -1,0 +1,41 @@
+SERVER_PORT: 8082
+spring:
+  h2:
+    console:
+      enabled: 'true'
+    datasource:
+      initialization-mode: always
+      schema: classpath:schema.sql
+      data: classpath:data.sql
+
+JPA_USERNAME: sa
+JPA_URL: jdbc:h2:mem:dcbapp
+JPA_DRIVER: org.h2.Driver
+JPA_PASSWORD: secret
+JPA_DIALECT: org.hibernate.dialect.H2Dialect
+
+MAIL_HOST: smtp.gmail.com
+MAIL_PORT: 587
+MAIL_USER: secret3@gmail.com
+MAIL_PASSWORD: secret
+MAIL_AUTH: true
+MAIL_TLS: true
+
+LOG_FILE: /var/www/jar/op/logs/op.log
+
+JWT_SECRET: secret
+JWT_EXPIRATION: 86400000
+
+PHOTOS_PATH: /var/www/jar/op/fotos/
+
+STATIC_MAP_URL: https://maps.googleapis.com/maps/api/staticmap
+GOOGLE_MAPS_KEY: secret
+
+TWILIO_SID: secret
+TWILIO_TOKEN: secret
+TWILIO_TOKEN_MESSAGING_SERVICE: secret
+MAIL_NOTIFICATIONS: true
+SMS_NOTIFICATIONS: true
+
+REPORT_MIN_TIME: '08:00:00'
+REPORT_MAX_TIME: '18:00:00'

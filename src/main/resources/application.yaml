@@ -1,0 +1,54 @@
+spring:
+  profiles:
+    active: default
+  application:
+    name: demo
+  datasource:
+    username: ${JPA_USERNAME}
+    url: ${JPA_URL}
+    driverClassName: ${JPA_DRIVER}
+    password: ${JPA_PASSWORD}
+  jpa:
+    database-platform: ${JPA_DIALECT}
+    hibernate:
+      ddlAuto: none
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_AUTH}
+          starttls:
+            enable: ${MAIL_TLS}
+
+server:
+  port:
+    ${SERVER_PORT}
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: ${LOG_FILE}
+jwtSecret: ${JWT_SECRET}
+jwtExpirationMs: ${JWT_EXPIRATION}
+rutaFotos: ${PHOTOS_PATH}
+staticMapURL: ${STATIC_MAP_URL}
+googleMapsApiKey: ${GOOGLE_MAPS_KEY}
+twilio:
+  accountSid: ${TWILIO_SID}
+  apiToken: ${TWILIO_TOKEN}
+  messagingServiceSid: ${TWILIO_TOKEN_MESSAGING_SERVICE}
+notifications:
+  mail: ${MAIL_NOTIFICATIONS}
+  sms: ${SMS_NOTIFICATIONS}
+reports:
+  minReportTime: ${REPORT_MIN_TIME}
+  maxReportTime: ${REPORT_MAX_TIME}

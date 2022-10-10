@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard Asistencia Vial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+</head>
+    <body>
+        <nav class="nav" style="width: 85vw; margin-left: auto; margin-right: auto;" >
+            <a class="nav-link disabled">Asistencias</a>
+            <a class="nav-link" href="/admin/tecnicos">Technicians</a>
+            <a class="nav-link" href="/admin/reportes">Reportes</a>
+            <a class="nav-link" href="/admin/proyectos">Proyectos</a>
+            <a class="nav-link" href="/admin/dashboard">DashBoard</a>
+        </nav>
+        <div class="card" style="width: 85vw; margin-left: auto; margin-right: auto;" >
+            <div class="card-body">
+                <h2 class="card-title" >Asistencias</h2>
+                <div th:switch="${asistencias.size()}">
+                    <div th:case="0" class="alert alert-primary" role="alert">
+                        No se han recibido asistencias!
+                    </div>
+                    <div th:case="*">
+                        <table class="table table-bordered" >
+                            <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Telefono</th>
+                                <th>Vehiculo</th>
+                                <th>Tipo Situacion</th>
+                                <th>Placa</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Actualizar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="asistencia : ${asistencias}">
+                                <td th:text="${asistencia.nombre} + ' ' + ${asistencia.apellido}"></td>
+                                <td th:text="${asistencia.telefono}"></td>
+                                <td th:text="${asistencia.tipoVehiculo} + ' ' + ${asistencia.marca} + ' ' + ${asistencia.color}"></td>
+                                <td th:text="${asistencia.tipoSituacion}"></td>
+                                <td th:text="${asistencia.placa}"></td>
+                                <td th:text="${asistencia.fechaLlamada}"></td>
+                                <td th:switch="${asistencia.estado}" >
+                                    <span th:case="Enviada" class="badge bg-danger" th:text="${asistencia.estado}" ></span>
+                                    <span th:case="Completada" class="badge bg-success" th:text="${asistencia.estado}" ></span>
+                                    <span th:case="Cerrada" class="badge bg-secondary" th:text="${asistencia.estado}" ></span>
+                                    <span th:case="Asignada" class="badge bg-primary" th:text="${asistencia.estado}" ></span>
+                                    <span th:case="*" class="badge bg-info" th:text="${asistencia.estado}" ></span>
+                                </td>
+                                <td><a th:href="@{/admin/edit-asistencia/{id}(id=${asistencia.id})}">Actualizar</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="/admin/crear-asistencia" type="button" class="btn btn-primary">Crear Asistencia</a>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    </body>
+</html>

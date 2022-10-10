@@ -1,0 +1,60 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.5'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id "org.openapi.generator" version "5.4.0"
+}
+
+group = 'com.demo'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'io.springfox:springfox-swagger2:3.0.0'
+	implementation group: "com.twilio.sdk", name: "twilio", version: "8.29.1"
+	implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = "$projectDir/src/main/resources/api.yml"
+	outputDir = "$projectDir"
+	apiPackage = "com.demo.op.api"
+	modelPackage = "com.demo.op.model"
+	modelNameSuffix = "DTO"
+	configOptions = [
+			interfaceOnly: "true",
+			openApiNullable: "false",
+			skipDefaultInterface: "true"
+	]
+	globalProperties = [
+			apis: "",
+			models: ""
+	]
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

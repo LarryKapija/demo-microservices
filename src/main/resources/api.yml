@@ -1,0 +1,1340 @@
+openapi: 3.0.1
+info:
+  title: Demo
+  description: 'Demo'
+  version: 0.5.0
+servers:
+  - url: https://op.op.com
+tags:
+  - name: Auth
+    description: Registro y autenticacion
+  - name: Reporte
+    description: Reportes de baches y averias
+  - name: Asistencia
+    description: Registrar y consultar asistencias viales
+  - name: Technician
+    description: Registrar y consultar tecnicos
+  - name: Tipo Reporte
+    description: Consultar los tipo de reportes disponibles
+paths:
+  /auth/send-phone-otp:
+    post:
+      tags:
+        - Auth
+      summary: Envia OTP al telefono
+      operationId: sendPhoneOTP
+      requestBody:
+        description: enviar OTP al telefono
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidatePhoneRequest'
+        required: true
+      responses:
+        200:
+          description: OTP enviado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        400:
+          description: Request Invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /auth/signin:
+    post:
+      tags:
+        - Auth
+      summary: Autentificar usuario
+      operationId: authenticateUser
+      requestBody:
+        description: Autentificar user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        200:
+          description: Autentificado de forma correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        400:
+          description: Request Invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: Registrar nuevo usuario
+      operationId: registerUser
+      requestBody:
+        description: Auth user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroRequest'
+        required: true
+      responses:
+        200:
+          description: Autenticado de forma correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        400:
+          description: Validacion invalida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistroResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /auth/validate-otp:
+    post:
+      tags:
+        - Auth
+      summary: Validar OTP del telefono
+      operationId: validateOTP
+      requestBody:
+        description: Validar OTP del telefono
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmacionRegistroRequest'
+        required: true
+      responses:
+        200:
+          description: OTP validado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        400:
+          description: OTP invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /reporte:
+    get:
+      tags:
+        - Reporte
+      summary: Retorna todos los reportes
+      operationId: getAllReportes
+      responses:
+        200:
+          description: Operacion Exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportesResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+    post:
+      tags:
+        - Reporte
+      summary: Crea un reporte
+      operationId: saveReporte
+      requestBody:
+        description: Crea un nuevo reporte
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReporteRequest'
+        required: true
+      responses:
+        200:
+          description: Reporte creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReporteResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /reporte/telefono/{telefono}:
+    get:
+      tags:
+        - Reporte
+      summary: Retorna los reportes de un ciudadano especifco
+      operationId: getReportesByTelefono
+      parameters:
+        - name: telefono
+          in: path
+          description: telefono del ciudadano
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Operacion Exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportesResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /reporte/{id}:
+    get:
+      tags:
+        - Reporte
+      summary: Retorna un Reporte especifico
+      operationId: getReporteById
+      parameters:
+        - name: id
+          in: path
+          description: ID del reporte a retornar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Reporte encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReporteResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+    put:
+      tags:
+        - Reporte
+      summary: Actualizar un Reporte
+      operationId: updateReporte
+      parameters:
+        - name: id
+          in: path
+          description: ID del reporte a editar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Actualizar un reporte existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReporteRequest'
+        required: true
+      responses:
+        200:
+          description: Reporte actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /reporte/location:
+    post:
+      tags:
+        - Reporte
+      summary: Retorna si es posible realizar un reporte en una ubicacion
+      operationId: getPuedeCrearReporteEnUbicacion
+      requestBody:
+        description: Ubicacion a validar
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationRequest'
+        required: true
+      responses:
+        200:
+          description: Es Posible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UbicacionReporteResponse'
+        400:
+          description: Request Invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /asistencia:
+    get:
+      tags:
+        - Asistencia
+      summary: Retorna todas las asistencias
+      operationId: getAllAsistencias
+      responses:
+        200:
+          description: Operacion Exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsistenciasResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+    post:
+      tags:
+        - Asistencia
+      summary: Crea una asistencia
+      operationId: saveAsistencia
+      requestBody:
+        description: Crea una nueva asistencia
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsistenciaRequest'
+        required: true
+      responses:
+        200:
+          description: Asistencia creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsistenciaResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /asistencia/tecnico/{idTechnician}:
+    get:
+      tags:
+        - Asistencia
+      summary: Retorna todas las asistencias
+      operationId: getAsistenciasByTechnician
+      parameters:
+        - name: idTechnician
+          in: path
+          description: ID del tecnico encargado
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Operacion Exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsistenciasResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /asistencia/{id}:
+    get:
+      tags:
+        - Asistencia
+      summary: Retorna una Asistencia especifica
+      operationId: getAsistenciaById
+      parameters:
+        - name: id
+          in: path
+          description: ID de la asistencia a retornar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Asistencia encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsistenciaResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+    put:
+      tags:
+        - Asistencia
+      summary: Actualizar una Asistencia
+      operationId: updateAsistencia
+      parameters:
+        - name: id
+          in: path
+          description: ID de la asistencia a editar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Actualizar una asistencia existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsistenciaRequest'
+        required: true
+      responses:
+        200:
+          description: Asistencia actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+    patch:
+      tags:
+        - Asistencia
+      summary: Actualizar el estado de una Asistencia
+      operationId: updateEstadoAsistencia
+      parameters:
+        - name: id
+          in: path
+          description: ID de la asistencia a editar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Actualizar el estado de una asistencia existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstadoAsistenciaRequest'
+        required: true
+      responses:
+        200:
+          description: Asistencia actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /tecnico:
+    get:
+      tags:
+        - Technician
+      summary: Retorna todos los tecnicos
+      operationId: getAllTechnicians
+      responses:
+        200:
+          description: Operacion Exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TechniciansResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+    post:
+      tags:
+        - Technician
+      summary: Crea un tecnico
+      operationId: saveTechnician
+      requestBody:
+        description: Crea un nuevo tecnico
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TechnicianRequest'
+        required: true
+      responses:
+        200:
+          description: Technician creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TechnicianResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /tecnico/telefono/{telefono}:
+    get:
+      tags:
+        - Technician
+      summary: Retorna un Technician especifico
+      operationId: getTechnicianByTelefono
+      parameters:
+        - name: telefono
+          in: path
+          description: Telefono del tecnico a retornar
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Technician encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TechnicianResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /tecnico/{id}:
+    get:
+      tags:
+        - Technician
+      summary: Retorna un Technician especifico
+      operationId: getTechnicianById
+      parameters:
+        - name: id
+          in: path
+          description: ID del tecnico a retornar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Technician encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TechnicianResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+    put:
+      tags:
+        - Technician
+      summary: Actualizar un Technician
+      operationId: updateTechnician
+      parameters:
+        - name: id
+          in: path
+          description: ID del tecnico a editar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Actualizar un tecnico existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TechnicianRequest'
+        required: true
+      responses:
+        200:
+          description: Asistencia actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /tecnico/{id}/location:
+    patch:
+      tags:
+        - Technician
+      summary: Actualizar ubicacion del Technician
+      operationId: updateTechnicianLocation
+      parameters:
+        - name: id
+          in: path
+          description: ID del tecnico a actualizar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Actualizar un tecnico existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationRequest'
+        required: true
+      responses:
+        200:
+          description: Asistencia actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        404:
+          description: No se encontro el reporte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+  /tipo-reporte:
+    get:
+      tags:
+        - Tipo Reporte
+      summary: Retorna todos los tipos de reporte
+      operationId: getAllTipoReporte
+      responses:
+        200:
+          description: Operacion Exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiposReporteResponse'
+        401:
+          description: No Autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+components:
+  schemas:
+    TiposReporteResponse:
+      type: object
+      properties:
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/TipoReporte'
+        type:
+          type: string
+        message:
+          type: string
+    TipoReporte:
+      type: object
+      properties:
+        descripcion:
+          type: string
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    ValidatePhoneRequest:
+      type: object
+      required:
+        - phone
+      properties:
+        phone:
+          type: string
+    RegistroRequest:
+      type: object
+      required:
+        - telefono
+        - nombre
+        - apellido
+      properties:
+        telefono:
+          type: string
+          description: the username
+        correo:
+          type: string
+        nombre:
+          type: string
+        apellido:
+          type: string
+    ConfirmacionRegistro:
+      type: object
+      properties:
+        solicitud:
+          type: string
+    Jwt:
+      type: object
+      properties:
+        token:
+          type: string
+        nombre:
+          type: string
+        apellido:
+          type: string
+    JwtResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/Jwt'
+        type:
+          type: string
+        message:
+          type: string
+    RegistroResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/ConfirmacionRegistro'
+        type:
+          type: string
+        message:
+          type: string
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponseDetail'
+    ConfirmacionRegistroRequest:
+      type: object
+      required:
+        - solicitud
+        - oneTimePassword
+      properties:
+        solicitud:
+          type: string
+        oneTimePassword:
+          type: string
+    ReporteRequest:
+      type: object
+      required:
+        - descripcion
+        - longitud
+        - latitud
+        - telefono
+      properties:
+        telefono:
+          type: string
+        descripcion:
+          type: string
+        tipoReporte:
+          type: string
+          enum:
+            - Hoyo en Pavimento
+            - Otro
+        longitud:
+          type: string
+        latitud:
+          type: string
+        notas:
+          type: string
+        fotos:
+          type: array
+          items:
+            type: string
+    Reporte:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        descripcion:
+          type: string
+        tipoReporte:
+          type: string
+        longitud:
+          type: string
+        latitud:
+          type: string
+        notas:
+          type: string
+        nombre:
+          type: string
+        apellido:
+          type: string
+        correo:
+          type: string
+        telefono:
+          type: string
+        fechaCreacion:
+          type: string
+          format: date-time
+        fechaUltActualizacion:
+          type: string
+          format: date-time
+        fotos:
+          type: array
+          items:
+            type: string
+        estado:
+          $ref: '#/components/schemas/EstadoReporte'
+    ReporteResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/Reporte'
+        type:
+          type: string
+        message:
+          type: string
+    ReportesResponse:
+      type: object
+      properties:
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reporte'
+        type:
+          type: string
+        message:
+          type: string
+    AsistenciaRequest:
+      type: object
+      required:
+        - nombre
+        - apellido
+        - telefono
+        - tipoSituacion
+        - placa
+        - latitud
+        - longitud
+      properties:
+        fechaAsistencia:
+          type: string
+          format: date-time
+        nombre:
+          type: string
+          maxLength: 100
+        apellido:
+          type: string
+          maxLength: 100
+        telefono:
+          type: string
+          maxLength: 100
+        tipoSituacion:
+          type: string
+          maxLength: 100
+        situacion:
+          type: string
+          maxLength: 2000
+        placa:
+          type: string
+          maxLength: 20
+        tipoVehiculo:
+          type: string
+          maxLength: 50
+        marca:
+          type: string
+          maxLength: 50
+        modelo:
+          type: string
+          maxLength: 50
+        color:
+          type: string
+          maxLength: 20
+        urlImagenFirma:
+          type: string
+          maxLength: 250
+        latitud:
+          type: string
+          maxLength: 50
+        longitud:
+          type: string
+          maxLength: 50
+        idTechnician:
+          type: integer
+          format: int64
+        notasTechnician:
+          type: string
+          maxLength: 2000
+        estado:
+          type: string
+          description: Estado de la asistencia
+          enum:
+            - Enviada
+            - Asignada
+            - En Proceso
+            - Completada
+            - Cerrada
+    EstadoAsistenciaRequest:
+      type: object
+      required:
+        - estado
+        - notasTechnician
+      properties:
+        notasTechnician:
+          type: string
+          maxLength: 2000
+        urlImagenFirma:
+          type: string
+          maxLength: 250
+        estado:
+          type: string
+          description: Estado de la asistencia
+          enum:
+            - Enviada
+            - Asignada
+            - En Proceso
+            - Completada
+            - Cerrada
+    Asistencia:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        fechaLlamada:
+          type: string
+          format: date-time
+        fechaAsistencia:
+          type: string
+          format: date-time
+        nombre:
+          type: string
+          maxLength: 100
+        apellido:
+          type: string
+          maxLength: 100
+        telefono:
+          type: string
+          maxLength: 100
+        tipoSituacion:
+          type: string
+          maxLength: 100
+        situacion:
+          type: string
+          maxLength: 2000
+        placa:
+          type: string
+          maxLength: 20
+        tipoVehiculo:
+          type: string
+          maxLength: 50
+        marca:
+          type: string
+          maxLength: 50
+        modelo:
+          type: string
+          maxLength: 50
+        color:
+          type: string
+          maxLength: 20
+        urlImagenFirma:
+          type: string
+          maxLength: 250
+        latitud:
+          type: string
+          maxLength: 50
+        longitud:
+          type: string
+          maxLength: 50
+        idTechnician:
+          type: integer
+          format: int64
+        notasTechnician:
+          type: string
+          maxLength: 2000
+        tecnico:
+          $ref: '#/components/schemas/Technician'
+        estado:
+          type: string
+          description: Estado de la asistencia
+          enum:
+            - Enviada
+            - Asignada
+            - En Proceso
+            - Completada
+            - Cerrada
+    AsistenciaResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/Asistencia'
+        type:
+          type: string
+        message:
+          type: string
+    AsistenciasResponse:
+      type: object
+      properties:
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asistencia'
+        type:
+          type: string
+        message:
+          type: string
+    TechnicianRequest:
+      type: object
+      required:
+        - nombre
+        - apellido
+        - telefono
+        - latitud
+        - longitud
+      properties:
+        nombre:
+          type: string
+          maxLength: 100
+        apellido:
+          type: string
+          maxLength: 100
+        telefono:
+          type: string
+          maxLength: 100
+        latitud:
+          type: string
+          maxLength: 50
+        longitud:
+          type: string
+          maxLength: 50
+    Technician:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+          maxLength: 100
+        apellido:
+          type: string
+          maxLength: 100
+        telefono:
+          type: string
+          maxLength: 100
+        latitud:
+          type: string
+          maxLength: 50
+        longitud:
+          type: string
+          maxLength: 50
+    TechnicianResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/Technician'
+        type:
+          type: string
+        message:
+          type: string
+    TechniciansResponse:
+      type: object
+      properties:
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/Technician'
+        type:
+          type: string
+        message:
+          type: string
+    UbicacionReporteResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/UbicacionReporte'
+        message:
+          type: string
+    UbicacionReporte:
+      type: object
+      properties:
+        posible:
+          type: boolean
+        message:
+          type: string
+    LocationRequest:
+      type: object
+      required:
+        - latitud
+        - longitud
+      properties:
+        latitud:
+          type: string
+          maxLength: 50
+        longitud:
+          type: string
+          maxLength: 50
+    EstadoReporte:
+      type: object
+      properties:
+        descripcion:
+          type: string
+          maxLength: 50
+        descripcionSecundaria:
+          type: string
+          maxLength: 50
+        porcentajeCompletado:
+          type: number
+          format: float
+        color:
+          type: string
+        detalle:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetalleEstadoReporte'
+    DetalleEstadoReporte:
+      type: object
+      properties:
+        nombre:
+          type: string
+          maxLength: 50
+        fechaInicio:
+          type: string
+          format: date-time
+        fechaFinal:
+          type: string
+          format: date-time
+    ResponseDetail:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    EmptyResponse:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
